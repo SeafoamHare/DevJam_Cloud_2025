@@ -36,7 +36,9 @@ steps:
 images:
   - '${_IMAGE_NAME}:${SHORT_SHA}'
   - '${_IMAGE_NAME}:latest'
-
+  
+options:
+  logging: CLOUD_LOGGING_ONLY
 # Substitutions are passed from the Cloud Build trigger in main.tf
 # _SERVICE_NAME: Name of the Cloud Run service (e.g., library-management-system)
 # _REGION: GCP region (e.g., us-central1)
