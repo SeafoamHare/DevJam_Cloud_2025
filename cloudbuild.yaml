@@ -1,0 +1,43 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '${_IMAGE_NAME}:${SHORT_SHA}', '.']
+    id: 'Build Docker Image'
+
+  # Push the Docker image to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE_NAME}:${SHORT_SHA}']
+    id: 'Push Docker Image to Artifact Registry'
+
+  # Tag the image as 'latest'
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', '${_IMAGE_NAME}:${SHORT_SHA}', '${_IMAGE_NAME}:latest']
+    id: 'Tag Image as Latest'
+
+  # Push the 'latest' tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE_NAME}:latest']
+    id: 'Push Latest Tag to Artifact Registry'
+
+  # Deploy to Cloud Run
+  # This step is optional if you prefer to manage deployment solely through Terraform apply
+  # after the image is built and pushed. However, it's common to include it for CI/CD.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+        'run', 'deploy', '${_SERVICE_NAME}',
+        '--image', '${_IMAGE_NAME}:latest', # Deploy the 'latest' tag
+        '--region', '${_REGION}',
+        '--platform', 'managed',
+        '--quiet'
+      ]
+    id: 'Deploy to Cloud Run'
+
+images:
+  - '${_IMAGE_NAME}:${SHORT_SHA}'
+  - '${_IMAGE_NAME}:latest'
+
+# Substitutions are passed from the Cloud Build trigger in main.tf
+# _SERVICE_NAME: Name of the Cloud Run service (e.g., library-management-system)
+# _REGION: GCP region (e.g., us-central1)
+# _IMAGE_NAME: Full image path in Artifact Registry (e.g., us-central1-docker.pkg.dev/your-project/app-repo/app-name)
