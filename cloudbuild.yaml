@@ -41,7 +41,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 # Substitutions are passed from the Cloud Build trigger in main.tf
 substitutions:
+  _SERVICE_NAME: "library-management-system"
   _IMAGE_NAME: "us-central1-docker.pkg.dev/devjam-cloud-2025/library-management-system-repo/library-management-system"
 # _REGION: GCP region (e.g., us-central1)
-# _IMAGE_NAME: Full image path in Artifact Registry (e.g., us-central1-docker.pkg.dev/your-project/app-repo/app-name)
 
