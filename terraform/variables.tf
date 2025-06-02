@@ -1,13 +1,11 @@
 variable "gcp_project_id" {
   description = "The GCP project ID to deploy to."
   type        = string
-  default     = "devjam-cloud-2025"
 }
 
 variable "gcp_region" {
   description = "The GCP region for resources."
   type        = string
-  default     = "us-central1"
 }
 
 variable "app_name" {
@@ -26,6 +24,17 @@ variable "github_owner" {
 variable "github_repo_name" {
   description = "The name of the GitHub repository."
   type        = string
-  # Replace with your GitHub repository name
-  default     = "DevJam_Cloud_2025"
+  default     = "DevJam_Cloud_2025" // Replace with your repository name
+}
+
+variable "db_user_name" {
+  description = "The username for the Cloud SQL database user."
+  type        = string
+}
+
+variable "db_user_password" {
+  description = "The password for the Cloud SQL database user."
+  type        = string
+  sensitive   = true
+  // No default, should be set via .tfvars or environment variables for security
 }
