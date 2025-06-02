@@ -12,13 +12,13 @@ provider "google" {
   region  = var.gcp_region
 }
 
-resource "google_artifact_registry_repository" "default" {
-  provider      = google
-  location      = var.gcp_region
-  repository_id = "${var.app_name}-repo"
-  description   = "Docker repository for ${var.app_name}"
-  format        = "DOCKER"
-}
+# resource "google_artifact_registry_repository" "default" {
+#   provider      = google
+#   location      = var.gcp_region
+#   repository_id = "${var.app_name}-repo"
+#   description   = "Docker repository for ${var.app_name}"
+#   format        = "DOCKER"
+# }
 
 resource "null_resource" "docker_image_build_push" {
   # This provisioner will run on every 'terraform apply' unless more specific triggers are added.
@@ -30,16 +30,16 @@ resource "null_resource" "docker_image_build_push" {
       echo "Configuring Docker credentials for Artifact Registry..."
       gcloud auth configure-docker ${var.gcp_region}-docker.pkg.dev --quiet
       echo "Building Docker image for linux/amd64..."
-      docker build --platform linux/amd64 -t "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${google_artifact_registry_repository.default.repository_id}/${var.app_name}:latest" .
+      docker build --platform linux/amd64 -t "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${var.repository_id}/${var.app_name}:latest" .
       echo "Pushing Docker image to Artifact Registry..."
-      docker push "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${google_artifact_registry_repository.default.repository_id}/${var.app_name}:latest"
+      docker push "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${var.repository_id}/${var.app_name}:latest"
     EOT
   }
   triggers = {
     always_run = timestamp()
   }
   
-  depends_on = [google_artifact_registry_repository.default]
+  # depends_on = [google_artifact_registry_repository.default]
 }
 
 # locals {
@@ -105,7 +105,7 @@ resource "google_cloud_run_v2_service" "default" {
     containers {
       # Before applying, ensure the image is pushed to Artifact Registry:
       # ${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${google_artifact_registry_repository.default.repository_id}/${var.app_name}:latest
-      image = "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${google_artifact_registry_repository.default.repository_id}/${var.app_name}:latest"
+      image = "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${var.repository_id}/${var.app_name}:latest"
       ports {
         container_port = 8080
       }

@@ -14,6 +14,11 @@ variable "app_name" {
   default     = "library-management-system"
 }
 
+variable "repository_id" {
+  description = "The ID of the Artifact Registry repository."
+  type        = string
+  default     = "library-management-system-repo" // Replace with your desired repository ID
+}
 variable "github_owner" {
   description = "The GitHub repository owner (e.g., your GitHub username)."
   type        = string
