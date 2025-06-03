@@ -1,3 +1,7 @@
 fastapi
 uvicorn[standard]
+sqlalchemy
 psycopg2-binary
+# Add other dependencies here, for example:
+# pydantic[email] # For email validation in Pydantic models
+# passlib[bcrypt] # For password hashing

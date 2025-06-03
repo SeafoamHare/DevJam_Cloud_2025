@@ -1,13 +1,17 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
 
-host = "34.135.182.134"
-dbname = "postgres"
-user = "postgres"
-password = "admin"
-sslmode = "allow"
-DATABASE_URL = "postgresql://postgres:admin@34.135.182.134/postgres"
+load_dotenv()
+
+host = os.getenv("DB_HOST")
+dbname = os.getenv("DB_NAME")
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+sslmode = os.getenv("DB_SSLMODE", "allow")
 
 conn_string = f"host={host} user={user} dbname={dbname} password={password} sslmode={sslmode}"
+
 
 def get_connection():
     return psycopg2.connect(conn_string)
