@@ -5,6 +5,7 @@ from ..models.borrow import BorrowRecord, BookBorrowRequest
 from ..dao.borrow_dao import BorrowDAO
 from ..dao.user_dao import UserDAO
 from ..dao.books_dao import BookDAO
+from ..vertex_ai_example import generate_book_recommendation
 
 router = APIRouter()
 borrow_dao = BorrowDAO()
@@ -73,3 +74,44 @@ async def get_user_borrow_records(user_id: int):
     if not records:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No borrow records found for this user")
     return [BorrowRecord(**r) for r in records]
+
+@router.get("/recommendations/{user_id}", response_model=List[str])
+async def get_book_recommendations(user_id: int):
+    user = user_dao.get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    borrow_records = borrow_dao.get_user_borrow_records(user_id)
+    borrowed_book_titles = []
+    if borrow_records:
+        for record in borrow_records:
+            book = book_dao.get_book(record["book_id"])
+            if book:
+                borrowed_book_titles.append(book["title"])
+
+    all_books = book_dao.get_books(limit=1000)  # Fetch a large number of books
+    available_book_titles = [book["title"] for book in all_books if book.get("available_copies", 0) > 0]
+
+    if not available_book_titles:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No books currently available in the library.")
+
+    # If the user has no borrowing history, we can recommend popular books or new additions
+    # For this example, we'll return a subset of available books if no history
+    if not borrowed_book_titles:
+        # Potentially, call a different Vertex AI function for general recommendations
+        # For now, let's return a few available books or an empty list
+        # return available_book_titles[:3] # Or handle as a special case
+        # Or, inform that recommendations are based on borrowing history which is empty
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="No borrowing history to base recommendations on. Here are some available books.", headers={"X-Recommendation-Type": "general"})
+
+
+    recommendations = generate_book_recommendation(borrowed_book_titles, available_book_titles)
+
+    if not recommendations:
+        # This case means Vertex AI returned no specific recommendations based on history
+        # We could return a generic list or a specific message
+        # For example, return a few generally popular available books
+        # return available_book_titles[:3] # Example: return first 3 available books
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="Could not generate specific recommendations. Here are some available books.", headers={"X-Recommendation-Type": "general_fallback"})
+
+    return recommendations
