@@ -39,15 +39,11 @@ images:
 options:
   logging: CLOUD_LOGGING_ONLY
 
+# Secrets should be correctly mapped here
 secrets:
-  - secretManager:
-      version: latest
-      secret: DB_USER
-      env: DB_USER  # Specify environment variable for DB_USER
-  - secretManager:
-      version: latest
-      secret: DB_PASSWORD
-      env: DB_PASSWORD  # Specify environment variable for DB_PASSWORD
+- secretEnv:
+    DB_USER: projects/$PROJECT_ID/secrets/DB_USER/versions/latest
+    DB_PASSWORD: projects/$PROJECT_ID/secrets/DB_PASSWORD/versions/latest
 
 # Substitutions are passed from the Cloud Build trigger in main.tf
 substitutions:
