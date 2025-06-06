@@ -51,4 +51,3 @@ substitutions:
   _SERVICE_NAME: "library-management-system"
   _IMAGE_NAME: "us-central1-docker.pkg.dev/devjam-cloud-2025/library-management-system-repo/library-management-system"
   _REGION: us-central1
-
