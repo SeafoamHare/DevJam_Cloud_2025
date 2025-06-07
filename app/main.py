@@ -2,7 +2,7 @@ import sys
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import books, users, transactions
+from app.routers import  users, chat
 from app import database
 from app.sockets.websocket_handler import router as websocket_router
 
@@ -19,9 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(books.router, prefix="/api/v1", tags=["books"])
+app.include_router(chat.router, prefix="/api/v1", tags=["chat"])
 app.include_router(users.router, prefix="/api/v1", tags=["users"])
-app.include_router(transactions.router, prefix="/api/v1", tags=["transactions"])
 app.include_router(websocket_router)
 
 @app.get("/")
