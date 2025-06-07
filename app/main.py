@@ -1,14 +1,10 @@
 import sys
 import os
-# sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from fastapi import FastAPI, WebSocketDisconnect, WebSocket
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import books, users, transactions
 from app import database
-from app.sockets.websocket_handler import router as websocket_router  # ← 匯入 WebSocket router
-import json
-
+from app.sockets.websocket_handler import router as websocket_router
 
 database.initialize_database()
 

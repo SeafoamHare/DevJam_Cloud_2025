@@ -1,6 +1,6 @@
 from fastapi import WebSocket, WebSocketDisconnect, APIRouter
 import json
-from app.manager import manager  # 假設你把 ConnectionManager 寫在這
+from app.manager import manager
 
 router = APIRouter()
 
