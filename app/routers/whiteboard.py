@@ -6,10 +6,12 @@ import os
 import json
 from dotenv import load_dotenv
 from app.models.response import WhiteboardAction
+from app.dao.whiteboard import WhiteboardDAO
 
 load_dotenv()
 
 router = APIRouter()
+
 
 # GCP Pub/Sub 設定
 project_id = os.getenv("GCP_PROJECT_ID")
@@ -26,13 +28,12 @@ def index():
 async def post_whiteboard_event(payload: WhiteboardAction):
     try:
         message = {
-            "type": "whiteboard",
-            "sender": payload.sender_id,
+            "sender_id": payload.sender_id,
             "content": payload.content,
             "action": payload.action
         }
-
-        # 發布訊息
+        dao = WhiteboardDAO()
+        dao.create_whiteboard(payload)
         future = publisher.publish(topic_path, json.dumps(message).encode("utf-8"))
         message_id = future.result()
         return {"status": "ok", "message_id": message_id}
