@@ -42,8 +42,8 @@ options:
 # Secrets should be correctly mapped here
 secrets:
 - secretEnv:
-    DB_USER: projects/devjam-cloud-2025/secrets/DB_USER/versions/latest
-    DB_PASSWORD: projects/devjam-cloud-2025/secrets/DB_PASSWORD/versions/latest
+    DB_USER: postgres #projects/devjam-cloud-2025/secrets/DB_USER/versions/latest
+    DB_PASSWORD: admin #projects/devjam-cloud-2025/secrets/DB_PASSWORD/versions/latest
 
 # Substitutions are passed from the Cloud Build trigger in main.tf
 substitutions:
