@@ -1,7 +1,7 @@
 from fastapi import WebSocket, WebSocketDisconnect
 from typing import Dict
 import json
-from app.rag.main import ask
+from app.rag import ask
 from app.models.response import ChatMessage, WhiteboardAction, WebSocketMessage
 
 class ConnectionManager:
@@ -26,7 +26,7 @@ class ConnectionManager:
         receiver_id = message.to_id
 
         # AI 處理路徑（假設 sender_id == 1 是 AI）
-        if receiver_id == 1:
+        if receiver_id == '1':
             await self.answer_by_ai(sender_id, message.content)
             return
 
