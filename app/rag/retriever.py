@@ -24,15 +24,27 @@ conn_string = f"host={host} user={user} dbname={dbname} password={password} sslm
 def get_connection():
     return psycopg2.connect(conn_string, cursor_factory=RealDictCursor)
 
-# 主搜尋功能
 def search_similar_contents(query: str, top_k: int = 3):
+    from psycopg2.extensions import register_adapter, AsIs
+    import numpy as np
+# 讓 psycopg2 支援 numpy float 自動轉換
+    def addapt_numpy_float32(numpy_float32):
+        return AsIs(numpy_float32)
+
+    register_adapter(np.float32, addapt_numpy_float32)
+    register_adapter(np.float64, addapt_numpy_float32)
+
     # 1. 載入模型
     model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
     embedding = model.encode(query)
 
+    # 將 numpy array 轉成 PostgreSQL 支援格式
+    embedding_list = embedding.tolist()
+    embedding_str = "[" + ",".join([str(x) for x in embedding_list]) + "]"
+
     # 2. 查詢最相近內容
     conn = get_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)  # 讓結果是 dict
     try:
         cur.execute(
             """
@@ -41,22 +53,14 @@ def search_similar_contents(query: str, top_k: int = 3):
             ORDER BY embedding <-> %s::vector
             LIMIT %s
             """,
-            (embedding.tolist(), embedding.tolist(), top_k)
+            (embedding_str, embedding_str, top_k)
         )
         results = cur.fetchall()
+        # results = 'blabla'
         return results
     except Exception as e:
         print(f"❌ 查詢時錯誤: {str(e)}")
         return []
     finally:
         cur.close()
-        conn.close()
-
-# # 測試執行
-# if __name__ == "__main__":
-#     query = input("請輸入問題：")
-#     results = search_similar_contents(query)
-#     print("🔍 搜尋結果：")
-#     for i, row in enumerate(results, 1):
-#         print(f"{i}. 相似度距離: {row['distance']:.4f}")
-#         print(f"   內容：{row['content'][:100]}...\n")
+        conn.close()  

@@ -8,8 +8,11 @@ from sentence_transformers import SentenceTransformer
 
 load_dotenv()
 
+# 获取当前文件所在目录的路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
+# 获取项目根目录的路径
 root_dir = os.path.dirname(os.path.dirname(current_dir))
+# 将项目根目录添加到系统路径中
 sys.path.append(root_dir)
 
 # 数据库连接配置
@@ -67,13 +70,47 @@ def insert_embedding(content: str, embedding: np.ndarray):
         cur.close()
         conn.close()
 
+def get_similar_content(query: str, limit: int = 1) -> str:
+    """
+    获取与查询最相似的内容
+    """
+    # 加载模型
+    model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+    
+    # 生成查询的嵌入向量
+    query_embedding = model.encode(query)
+    
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        # 使用余弦相似度查找最相似的内容
+        cur.execute("""
+            SELECT content, embedding <=> %s as distance
+            FROM embeddings
+            ORDER BY distance
+            LIMIT %s
+        """, (query_embedding.tolist(), limit))
+        
+        result = cur.fetchone()
+        if result:
+            return result['content']
+        return "抱歉，我找不到相关的信息。"
+    except Exception as e:
+        print(f"❌ 查詢相似內容時發生錯誤: {str(e)}")
+        return "抱歉，查询时发生错误。"
+    finally:
+        cur.close()
+        conn.close()
+
 def main():
     # 创建数据库表
     create_embeddings_table()
     
+    # 加载文本嵌入模型
     print("正在加載文本嵌入模型...")
     model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
     
+    # 读取文本文件
     file_path = os.path.join(root_dir, 'app', 'docs', 'symptom.txt')
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
