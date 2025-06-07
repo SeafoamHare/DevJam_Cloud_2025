@@ -6,61 +6,81 @@ class UserDAO:
     def __init__(self):
         self.conn = get_connection()
 
-    def create_user(self, username, email, is_active=True):
+    def create_user(self, username, email, password, organization=None, role=None, referrer=None, survey=None):
         with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(
                 """
-                INSERT INTO users (username, email, is_active)
-                VALUES (%s, %s, %s)
-                RETURNING id, username, email, is_active;
+                INSERT INTO users (username, email, password, organization, role, referrer, survey)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING username, email, password, organization, role, referrer, points, survey;
                 """,
-                (username, email, is_active)
+                (username, email, password, organization, role, referrer, survey)
             )
             self.conn.commit()
             return cur.fetchone()
 
-    def get_user(self, user_id):
+    def get_user(self, username: str):
         with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(
-                "SELECT id, username, email, is_active FROM users WHERE id = %s;",
-                (user_id,)
+                "SELECT username, email, password, organization, role, referrer, points, survey FROM users WHERE username = %s;",
+                (username,)
+            )
+            return cur.fetchone()
+
+    def get_user_by_username(self, username: str):
+        with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                "SELECT username, email, password, organization, role, referrer, points, survey FROM users WHERE username = %s;",
+                (username,)
             )
             return cur.fetchone()
 
     def get_users(self, skip=0, limit=10):
         with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(
-                "SELECT id, username, email, is_active FROM users ORDER BY id OFFSET %s LIMIT %s;",
+                "SELECT username, email, password, organization, role, referrer, points, survey FROM users ORDER BY username OFFSET %s LIMIT %s;",
                 (skip, limit)
             )
             return cur.fetchall()
 
-    def update_user(self, user_id, username=None, email=None, is_active=None):
+    def update_user(self, username: str, email=None, password=None, organization=None, role=None, referrer=None, points=None, survey=None):
         fields = []
         values = []
-        if username is not None:
-            fields.append('username = %s')
-            values.append(username)
         if email is not None:
             fields.append('email = %s')
             values.append(email)
-        if is_active is not None:
-            fields.append('is_active = %s')
-            values.append(is_active)
+        if password is not None:
+            fields.append('password = %s')
+            values.append(password)
+        if organization is not None:
+            fields.append('organization = %s')
+            values.append(organization)
+        if role is not None:
+            fields.append('role = %s')
+            values.append(role)
+        if referrer is not None:
+            fields.append('referrer = %s')
+            values.append(referrer)
+        if points is not None:
+            fields.append('points = %s')
+            values.append(points)
+        if survey is not None:
+            fields.append('survey = %s')
+            values.append(survey)
         if not fields:
             return None
-        values.append(user_id)
+        values.append(username)
         with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(
-                f"UPDATE users SET {', '.join(fields)} WHERE id = %s RETURNING id, username, email, is_active;",
+                f"UPDATE users SET {', '.join(fields)} WHERE username = %s RETURNING username, email, password, organization, role, referrer, points, survey;",
                 tuple(values)
             )
             self.conn.commit()
             return cur.fetchone()
 
-    def delete_user(self, user_id):
+    def delete_user(self, username: str):
         with self.conn.cursor() as cur:
-            cur.execute("DELETE FROM users WHERE id = %s;", (user_id,))
+            cur.execute("DELETE FROM users WHERE username = %s;", (username,))
             self.conn.commit()
 
     def close(self):

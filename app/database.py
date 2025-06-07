@@ -21,28 +21,37 @@ def initialize_database():
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id serial PRIMARY KEY,
-            username VARCHAR(50) NOT NULL,
+            username VARCHAR(50) PRIMARY KEY,
             email VARCHAR(100) NOT NULL,
-            is_active BOOLEAN DEFAULT TRUE
+            password TEXT NOT NULL,
+            organization VARCHAR(100),
+            role VARCHAR(50),
+            referrer TEXT,
+            points INTEGER DEFAULT 0,
+            survey TEXT
         );
     """)
+    # cursor.execute("""
+    #     CREATE TABLE IF NOT EXISTS counselors (
+    #         id INTEGER PRIMARY KEY REFERENCES users(id),
+    #         organization VARCHAR(100),
+    #         role VARCHAR(50) CHECK (role IN ('student', 'teacher')),
+    #         referrer TEXT,
+    #         points INTEGER DEFAULT 0
+    #     );
+    # """)
+    # cursor.execute("""
+    #     CREATE TABLE IF NOT EXISTS Questioner (
+    #         id INTEGER PRIMARY KEY REFERENCES users(id),
+    #         survey TEXT
+    #     );
+    # """)
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS books (
-            id serial PRIMARY KEY,
-            title VARCHAR(200) NOT NULL,
-            author VARCHAR(100) NOT NULL,
-            description TEXT,
-            available_copies INTEGER DEFAULT 1
-        );
-    """)
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS borrow_records (
-            id serial PRIMARY KEY,
-            user_id INTEGER NOT NULL REFERENCES users(id),
-            book_id INTEGER NOT NULL REFERENCES books(id),
-            borrow_date DATE NOT NULL,
-            return_date DATE
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            sender VARCHAR(50) REFERENCES users(username) NOT NULL,
+            receiver VARCHAR(50) REFERENCES users(username) NOT NULL,
+            message TEXT NOT NULL,
+            timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
     """)
     conn.commit()
