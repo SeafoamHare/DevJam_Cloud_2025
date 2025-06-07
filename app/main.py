@@ -41,7 +41,7 @@ async def websocket_endpoint(websocket: WebSocket):
         await manager.connect(websocket, user_counter)
         await websocket.send_text("✅ WebSocket 連線成功！")
         user_counter += 1  # 增加用户ID
-        
+        await manager.send_to(user_counter, 1,  "hello")
         while True:
             data = await websocket.receive_text()
             await manager.broadcast(data)
