@@ -6,23 +6,7 @@ from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 
-# 設定路徑與環境
-load_dotenv()
-current_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = os.path.dirname(os.path.dirname(current_dir))
-sys.path.append(root_dir)
-
-# DB 連線參數
-host = os.getenv("DB_HOST")
-dbname = os.getenv("DB_NAME")
-user = os.getenv("DB_USER")
-password = os.getenv("DB_PASSWORD")
-sslmode = os.getenv("DB_SSLMODE", "allow")
-conn_string = f"host={host} user={user} dbname={dbname} password={password} sslmode={sslmode}"
-
 # 取得 DB 連線
-def get_connection():
-    return psycopg2.connect(conn_string, cursor_factory=RealDictCursor)
 
 # 主搜尋功能
 def search_similar_contents(query: str, top_k: int = 3):
