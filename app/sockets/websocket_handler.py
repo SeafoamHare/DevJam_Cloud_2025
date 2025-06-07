@@ -19,6 +19,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int):
                 msg = data.get("message")
                 if not msg:
                     raise ValueError("message 不可為空")
+                    
                 await manager.send_to(user_id, to, msg)
             except Exception as e:
                 await websocket.send_text(f"⚠️ 傳送錯誤：{str(e)}")

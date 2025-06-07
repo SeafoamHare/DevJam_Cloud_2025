@@ -18,6 +18,10 @@ class ConnectionManager:
                 break
 
     async def send_to(self, sender_id: int, receiver_id: int, message: str):
+        if receiver_id == 1:
+            await self.answer_by_ai(sender_id, message)
+            return 
+        
         receiver_ws = self.active_connections.get(receiver_id)
         if receiver_ws:
             try:
@@ -26,6 +30,14 @@ class ConnectionManager:
                 print(f"無法傳送訊息給 {receiver_id}：{e}")
         else:
             print(f"使用者 {receiver_id} 不在線上")
+
+
+    async def answer_by_ai(self, sender_id: int, message: str):
+        sender_ws = self.active_connections.get(sender_id)
+        try:
+            await sender_ws.send_text(f"ai 回應：{message}")
+        except Exception as e:
+            print(f"無法傳送訊息給 ai：{e}")
 
     async def broadcast(self, message: str):
         for user_id, connection in self.active_connections.items():
