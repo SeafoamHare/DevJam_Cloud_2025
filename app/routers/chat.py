@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from app.models.chat_model import ChatMessage
+from app.models.response import ChatMessage
 from app.dao import chat_dao
 
 router = APIRouter()

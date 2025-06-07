@@ -1,5 +1,5 @@
 from app.database import get_connection
-from app.models.chat_model import ChatMessage
+from app.models.response import ChatMessage
 from datetime import datetime
 
 def save_message(chat_message: ChatMessage) -> bool:
