@@ -1,7 +1,7 @@
 from fastapi import WebSocket, WebSocketDisconnect
 from typing import Dict
 import json
-from app.rag.main import ask
+from app.rag import ask
 from app.models.response import ChatMessage, WhiteboardAction, WebSocketMessage
 
 class ConnectionManager:

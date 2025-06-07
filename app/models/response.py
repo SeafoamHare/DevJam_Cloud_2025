@@ -11,7 +11,7 @@ class ChatMessage(BaseModel):
 
 class WhiteboardAction(BaseModel):
     sender_id: int = Field(..., description="發送者 ID")
-    content: dict = Field(..., description="畫筆資料，例如座標、圖形、顏色")
+    content: str = Field(..., description="白板內容")
     action: Literal["draw", "erase"]
 
 

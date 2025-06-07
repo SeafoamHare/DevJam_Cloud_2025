@@ -2,6 +2,8 @@ from fastapi import WebSocket, WebSocketDisconnect, APIRouter
 import json
 from app.manager import manager
 from app.models.response import ChatMessage
+from app.pubsub import listen_pubsub
+import asyncio
 
 router = APIRouter()
 
@@ -9,6 +11,7 @@ router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket, user_id: int):
     await manager.connect(websocket, user_id)
     await websocket.send_text("✅ 登入成功，等待傳訊息")
+    asyncio.create_task(listen_pubsub(user_id, websocket))
 
     try:
         while True:
