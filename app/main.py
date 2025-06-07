@@ -2,9 +2,10 @@ import sys
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import  users, chat
+from app.routers import  users, chat, whiteboard
 from app import database
 from app.sockets.websocket_handler import router as websocket_router
+
 
 database.initialize_database()
 
@@ -22,6 +23,7 @@ app.add_middleware(
 app.include_router(chat.router, prefix="/api/v1", tags=["chat"])
 app.include_router(users.router, prefix="/api/v1", tags=["users"])
 app.include_router(websocket_router)
+app.include_router(whiteboard.router, prefix="/api/v1", tags=["whiteboard"])
 
 @app.get("/")
 async def root():
