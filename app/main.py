@@ -31,3 +31,7 @@ app.include_router(websocket_router)
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Library Management System API"}
+
+@app.get('/health')
+def health():
+    return {"message": "ok"}
