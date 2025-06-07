@@ -5,20 +5,22 @@ from datetime import datetime
 def save_message(chat_message: ChatMessage) -> bool:
     conn = None
     cursor = None
+    print(f"📥 儲存訊息：{chat_message.from_id} -> {chat_message.to_id} : {chat_message.content}")
     try:
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
             """
             INSERT INTO chat_messages (sender, receiver, message, timestamp)
-            VALUES (%s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s);
             """,
-            (chat_message.sender, chat_message.receiver, chat_message.message, chat_message.timestamp)
+            (chat_message.from_id, chat_message.to_id, chat_message.content, datetime.now())
         )
         conn.commit()
         return True
     except Exception as e:
         # Optionally log the error e
+        print(f"❌ 儲存訊息失敗：{e}")
         if conn:
             conn.rollback()
         return False

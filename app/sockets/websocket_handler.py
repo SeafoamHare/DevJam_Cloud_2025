@@ -4,6 +4,7 @@ from app.manager import manager
 from app.models.response import ChatMessage
 from app.pubsub import listen_pubsub
 import asyncio
+from app.dao.chat_dao import save_message
 
 router = APIRouter()
 
@@ -24,7 +25,8 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
 
                 if not chat_msg.content.strip():
                     raise ValueError("message 不可為空")
-
+                print(f"📩 收到來自 {chat_msg.from_id} 的訊息：{chat_msg.content}")
+                save_message(chat_msg)  
                 await manager.send_to(chat_msg)
 
             except Exception as e:
