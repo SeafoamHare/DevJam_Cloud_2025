@@ -6,7 +6,12 @@ from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 from openai import OpenAI
-
+import vertexai
+from vertexai.generative_models import GenerativeModel
+PROJECT_ID = "devjam-cloud-2025"
+LOCATION = "us-central1"
+# Initialize Vertex AI
+vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # 設定路徑與環境
 load_dotenv()
@@ -79,10 +84,17 @@ def ask(query: str):
         return call_openai(f"請回答下列問題：{query}")
     
 def call_openai(prompt: str):
+    try:
+        model = GenerativeModel("gemini-2.0-flash-001")  # 使用 gemini-2.0-flash-001 模型
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"❌ 呼叫 OpenAI 時錯誤: {str(e)}")
+        return "抱歉，無法回答您的問題。請稍後再試。"
     # client = OpenAI(api_key=OPENAI_API_KEY)
     # response = client.chat.completions.create(
     #     model="gpt-3.5-turbo",
     #     messages=[{"role": "user", "content": prompt}]
     # )
     # return response.choices[0].message.content
-    return "This is answer by ai"
+    # return "This is answer by ai"
