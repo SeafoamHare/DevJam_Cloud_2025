@@ -236,3 +236,5 @@ terraform.rc
 .terragrunt-cache
 
 testing/
+
+gcp-key.json
