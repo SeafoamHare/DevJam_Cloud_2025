@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇模式</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+        }
+        .header {
+            position: absolute;
+            top: 32px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #a259c6;
+            box-shadow: 0 2px 12px rgba(162, 89, 198, 0.10);
+            margin-right: 16px;
+        }
+        .main {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-group {
+            display: flex;
+            gap: 3.5rem;
+        }
+        .mode-btn {
+            width: 220px;
+            height: 180px;
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 28px;
+            box-shadow: 0 8px 32px 0 rgba(162, 89, 198, 0.13);
+            font-size: 2rem;
+            font-weight: 800;
+            color: #a259c6;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            letter-spacing: 2px;
+        }
+        .mode-btn:hover {
+            background: linear-gradient(120deg, #fed6e3 0%, #a8edea 100%);
+            transform: scale(1.05) rotate(-1deg);
+            box-shadow: 0 12px 40px 0 rgba(162, 89, 198, 0.18);
+        }
+        @media (max-width: 700px) {
+            .btn-group {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .main {
+                padding-top: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">LOGO</div>
+    </div>
+    <div class="header" style="right:40px;left:auto;top:32px;justify-content:flex-end;">
+        <a href="load.html" style="margin-right:24px;font-size:1.1rem;font-weight:700;color:#a259c6;text-decoration:none;transition:color 0.2s;">登入</a>
+        <a href="why.html" style="font-size:1.1rem;font-weight:700;color:#a259c6;text-decoration:none;transition:color 0.2s;">為甚麼要諮商</a>
+    </div>
+    <div class="main">
+        <div class="btn-group">
+            <button class="mode-btn" onclick="location.href='matchmaking.html'">一對一</button>
+            <button class="mode-btn" onclick="location.href='more_to_one.html'">多對一</button>
+        </div>
+    </div>
+</body>
+</html>

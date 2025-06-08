@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>預約選擇</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+        }
+        .reservation-container {
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
+            width: 420px;
+            padding: 2.5rem 2rem 2rem 2rem;
+        }
+        .reservation-title {
+            text-align: center;
+            color: #d35400;
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.1rem 0.5rem;
+            border-bottom: 1px solid #f6d365;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+        .target {
+            font-size: 1.15rem;
+            color: #3a7bd5;
+            font-weight: 700;
+        }
+        .checkbox {
+            transform: scale(1.3);
+            accent-color: #f6b93b;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(90deg, #f6b93b 0%, #fda085 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #fda085 0%, #f6b93b 100%);
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+<body>
+    <div class="reservation-container">
+        <div class="reservation-title">預約對象選擇</div>
+        <form id="reservationForm">
+            <div id="teacherList"></div>
+            <button type="submit" class="submit-btn">送出預約</button>
+        </form>
+    </div>
+    <script>
+        // 請將此 URL 換成您的實際 API 端點
+        const API_URL = '/api/teachers';
+        async function loadTeachers() {
+            const list = document.getElementById('teacherList');
+            list.innerHTML = '<div style="text-align:center;color:#aaa;">載入中...</div>';
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    list.innerHTML = data.map(t => `
+                        <div class="row">
+                            <span class="target">${t.name}</span>
+                            <input type="checkbox" class="checkbox" name="target" value="${t.id}">
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<div style="text-align:center;color:#aaa;">查無對象</div>';
+                }
+            } catch (e) {
+                list.innerHTML = '<div style="text-align:center;color:#d35400;">載入失敗，請稍後再試</div>';
+            }
+        }
+        loadTeachers();
+    </script>
+</body>
+</html>

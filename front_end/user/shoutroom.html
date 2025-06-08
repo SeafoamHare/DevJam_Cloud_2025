@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>吶喊室</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .shoutroom-box {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(162, 89, 198, 0.13);
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            max-width: 520px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            color: #a259c6;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .shout-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1.5px solid #a6c1ee;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            resize: vertical;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 12px;
+            color: #a259c6;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(120deg, #fed6e3 0%, #a8edea 100%);
+            color: #fff;
+        }
+        .shout-content {
+            width: 100%;
+            min-height: 80px;
+            background: #f3f3f3;
+            border-radius: 10px;
+            padding: 1.2rem 1rem;
+            font-size: 1.15rem;
+            color: #a259c6;
+            margin-top: 0.5rem;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="shoutroom-box">
+        <h2>吶喊室</h2>
+        <textarea id="shoutInput" class="shout-input" placeholder="請輸入你想大聲說的話..."></textarea>
+        <button class="submit-btn" onclick="submitShout()">送出</button>
+        <div id="shoutContent" class="shout-content">(這裡會顯示所有人最新的吶喊內容)</div>
+    </div>
+    <script>
+    // 假設API: GET /api/shoutroom 取得最新內容，POST /api/shoutroom 新增內容
+    // 這裡先用localStorage模擬，未來可直接換API
+    function loadShout() {
+        // TODO: 換成 fetch('/api/shoutroom').then(...)
+        const content = localStorage.getItem('shoutroom_content') || '';
+        document.getElementById('shoutContent').textContent = content || '(這裡會顯示所有人最新的吶喊內容)';
+    }
+    function submitShout() {
+        const val = document.getElementById('shoutInput').value.trim();
+        if (!val) return;
+        // TODO: 換成 fetch('/api/shoutroom', {method:'POST', body:...})
+        localStorage.setItem('shoutroom_content', val);
+        loadShout();
+        document.getElementById('shoutInput').value = '';
+    }
+    // 頁面載入時自動載入內容
+    loadShout();
+    // 可選：定時自動刷新（模擬多人同步）
+    setInterval(loadShout, 3000);
+    </script>
+</body>
+</html>

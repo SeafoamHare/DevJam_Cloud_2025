@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>已通過</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+        }
+        .success-box {
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 12px 40px 0 rgba(162, 89, 198, 0.13);
+            width: 420px;
+            padding: 3rem 2rem 2.5rem 2rem;
+            text-align: center;
+            border: 2.5px solid #a8edea;
+            animation: popIn 0.8s cubic-bezier(.5,1.8,.7,1.2);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .success-box h1 {
+            color: #a259c6;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 1.2rem;
+        }
+        .success-box p {
+            color: #555;
+            font-size: 1.15rem;
+            margin-bottom: 2.2rem;
+        }
+        .success-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 1.2rem;
+            display: block;
+        }
+        .back-btn {
+            padding: 0.8rem 2.2rem;
+            background: linear-gradient(90deg, #a259c6 0%, #fed6e3 100%);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .back-btn:hover {
+            background: linear-gradient(90deg, #fed6e3 0%, #a259c6 100%);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="success-box">
+        <span class="success-emoji">🎉</span>
+        <h1>恭喜通過！</h1>
+        <p>祝您有美好的一天！</p>
+        <button class="back-btn" onclick="window.location.href='interface.html'">繼續往選擇頁面</button>
+    </div>
+</body>
+</html>

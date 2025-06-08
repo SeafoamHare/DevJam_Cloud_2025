@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配對選擇</title>
+    <style>
+        body {
+            background: linear-gradient(90deg, #a8edea 50%, #fed6e3 50%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+        }
+        .main-box {
+            display: flex;
+            gap: 4rem;
+            position: relative;
+            z-index: 1;
+        }
+        .half-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 50vw;
+            height: 100vh;
+            background: #a8edea;
+            z-index: 0;
+        }
+        .half-bg.right {
+            left: 50vw;
+            background: #fed6e3;
+        }
+        .color-btn {
+            width: 220px;
+            height: 160px;
+            border: none;
+            border-radius: 32px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 8px 32px 0 rgba(162, 89, 198, 0.13);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .color-btn.left {
+            background: linear-gradient(135deg, #a8edea 0%, #3a7bd5 100%);
+        }
+        .color-btn.right {
+            background: linear-gradient(135deg, #fed6e3 0%, #f6d365 100%);
+        }
+        .color-btn:hover {
+            transform: scale(1.06) rotate(-1deg);
+            box-shadow: 0 16px 48px 0 rgba(162, 89, 198, 0.18);
+        }
+        .cloud {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+            animation: floatCloud 2.5s linear forwards;
+        }
+        @keyframes floatCloud {
+            0% { opacity: 0; transform: scale(0.7) translateY(20px); }
+            10% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: scale(1.1) translateY(-60px); }
+        }
+        .cloud-shape {
+            background: #fff;
+            border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%;
+            width: 90px;
+            height: 54px;
+            box-shadow: 30px 0 0 0 #fff, 60px 0 0 0 #fff, 15px 20px 0 0 #fff;
+            position: relative;
+        }
+        .cloud-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #a259c6;
+            font-size: 1.1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="half-bg"></div>
+    <div class="half-bg right"></div>
+    <div class="main-box">
+        <button class="color-btn left" id="btn1" onclick="location.href='scale.html'">直接直面自己</button>
+        <button class="color-btn right" id="btn2" onclick="location.href='chatbot.html'">想溫柔地被理解</button>
+    </div>
+    <script>
+        // 雲朵內的短句子
+        const cloudWords1 = [
+            '你很勇敢',
+            '慢慢來沒關係',
+            '你值得被愛',
+            '每一步都很棒',
+            '你的感受很重要',
+            '你不孤單',
+            '相信自己',
+            '一切都會好起來',
+            '你做得很好',
+            '給自己一點時間',
+            '你很堅強',
+            '允許自己休息'
+        ];
+        // 雲朵內的短句子（選項二）
+        const cloudWords2 = [
+            '你每天都在勇敢前進',
+            '每一步都值得驕傲',
+            '痛苦只是經歷，不是你',
+            '未來會有屬於你的光明',
+            '你有主權選擇自己的路',
+            '每個選擇都很重要',
+            '你值得被愛與尊重',
+            '你值得平安與關懷',
+            '治癒需要耐心與自我接納',
+            '你會變得更強大',
+            '允許自己感受所有情緒',
+            '你有獨特的力量',
+            '你的堅持是真正的力量'
+        ];
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function createCloud(x, y, word, parent) {
+            const cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            cloud.style.left = x + 'px';
+            cloud.style.top = y + 'px';
+            cloud.innerHTML = `<div class="cloud-shape"></div><div class="cloud-text">${word}</div>`;
+            parent.appendChild(cloud);
+            setTimeout(() => { cloud.style.opacity = 1; }, 10);
+            setTimeout(() => { cloud.remove(); }, 2500);
+        }
+        // 固定雲朵座標（左半邊極度分散，右半邊靠近右方按鈕且不重疊）
+        const fixedCloudPositionsLeft = [
+            {x: -400, y: -180},
+            {x: -320, y: -240},
+            {x: -500, y: -60},
+            {x: -350, y: 100},
+            {x: -480, y: 80},
+            {x: -220, y: -30},
+            {x: -540, y: 30}
+        ];
+        const fixedCloudPositionsRight = [
+            {x: 120, y: -80},   // 1
+            {x: 180, y: -40},   // 2
+            {x: 100, y: 60},    // 3
+            {x: 200, y: 30},    // 4
+            {x: 60, y: 100},    // 5
+            {x: 160, y: 90},    // 6
+            {x: 220, y: -10}    // 7
+        ];
+        function showClouds(btn, words, side) {
+            Array.from(btn.querySelectorAll('.cloud')).forEach(c => c.remove());
+            let baseX = btn.offsetWidth / 2;
+            let baseY = btn.offsetHeight / 2;
+            let positions = side === 'right' ? fixedCloudPositionsRight : fixedCloudPositionsLeft;
+            // 亂數取短句，且不重複
+            let shuffled = words.slice().sort(() => Math.random() - 0.5);
+            for (let i = 0; i < positions.length; i++) {
+                const pos = positions[i];
+                const word = shuffled[i % shuffled.length];
+                createCloud(baseX + pos.x, baseY + pos.y, word, btn);
+            }
+        }
+        function hideClouds(btn) {
+            Array.from(btn.querySelectorAll('.cloud')).forEach(c => c.remove());
+        }
+        document.getElementById('btn1').addEventListener('mouseenter', function() {
+            showClouds(this, cloudWords1, 'left');
+        });
+        document.getElementById('btn1').addEventListener('mouseleave', function() {
+            hideClouds(this);
+        });
+        document.getElementById('btn2').addEventListener('mouseenter', function() {
+            showClouds(this, cloudWords2, 'right');
+        });
+        document.getElementById('btn2').addEventListener('mouseleave', function() {
+            hideClouds(this);
+        });
+    </script>
+</body>
+</html>

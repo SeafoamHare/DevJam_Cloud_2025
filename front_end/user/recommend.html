@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推薦諮詢老師</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .recommend-container {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(162, 89, 198, 0.13);
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            max-width: 700px;
+            width: 100%;
+        }
+        h2 {
+            color: #a259c6;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .teacher-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(90deg, #fbc2eb 0%, #a6c1ee 100%);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 12px rgba(162, 89, 198, 0.08);
+        }
+        .teacher-info {
+            flex: 2;
+            display: flex;
+            align-items: center;
+        }
+        .teacher-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #a8edea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-right: 18px;
+        }
+        .teacher-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #a259c6;
+        }
+        .teacher-specialty {
+            flex: 2;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #3a3a3a;
+            font-weight: 600;
+        }
+        .teacher-score {
+            flex: 1;
+            text-align: right;
+            font-size: 1.1rem;
+            color: #f6b93b;
+            font-weight: 700;
+        }
+        .reserve-btn {
+            margin-left: 24px;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 10px;
+            color: #a259c6;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .reserve-btn:hover {
+            background: linear-gradient(120deg, #fed6e3 0%, #a8edea 100%);
+            color: #fff;
+        }
+        @media (max-width: 700px) {
+            .recommend-container { padding: 1rem; }
+            .teacher-row { flex-direction: column; align-items: flex-start; }
+            .teacher-info { margin-bottom: 0.5rem; }
+            .teacher-specialty, .teacher-score { text-align: left; }
+            .reserve-btn { margin-left: 0; margin-top: 0.5rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="recommend-container">
+        <h2>推薦諮詢老師</h2>
+        <div class="teacher-row">
+            <div class="teacher-info">
+                <div class="teacher-avatar">王</div>
+                <div class="teacher-name">王老師</div>
+            </div>
+            <div class="teacher-specialty">情緒管理、家庭關係</div>
+            <div class="teacher-score">4.8 ★</div>
+            <button class="reserve-btn">預約</button>
+        </div>
+        <div class="teacher-row">
+            <div class="teacher-info">
+                <div class="teacher-avatar">陳</div>
+                <div class="teacher-name">陳老師</div>
+            </div>
+            <div class="teacher-specialty">自我成長、壓力調適</div>
+            <div class="teacher-score">4.6 ★</div>
+            <button class="reserve-btn">預約</button>
+        </div>
+        <div class="teacher-row">
+            <div class="teacher-info">
+                <div class="teacher-avatar">林</div>
+                <div class="teacher-name">林老師</div>
+            </div>
+            <div class="teacher-specialty">家庭暴力、創傷復原</div>
+            <div class="teacher-score">4.9 ★</div>
+            <button class="reserve-btn">預約</button>
+        </div>
+    </div>
+</body>
+</html>

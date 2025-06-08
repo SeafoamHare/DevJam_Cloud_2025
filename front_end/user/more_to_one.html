@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多對一互動選擇</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-box {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(162, 89, 198, 0.13);
+            padding: 3rem 3rem 2.5rem 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .btn-group {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 1.5rem;
+        }
+        .main-btn {
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(162, 89, 198, 0.13);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #a259c6;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 2px;
+        }
+        .main-btn:hover {
+            background: linear-gradient(120deg, #fed6e3 0%, #a8edea 100%);
+            transform: scale(1.07) rotate(-1deg);
+            box-shadow: 0 12px 40px 0 rgba(162, 89, 198, 0.18);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-box">
+        <h2 style="color:#a259c6;margin-bottom:0.5em;">多對一互動選擇</h2>
+        <div class="btn-group">
+            <button class="main-btn" onclick="location.href='shoutroom.html'">吶喊室</button>
+            <button class="main-btn" onclick="location.href='whiteboard.html'">心情留言板</button>
+        </div>
+    </div>
+</body>
+</html>

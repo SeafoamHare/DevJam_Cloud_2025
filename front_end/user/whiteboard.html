@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動白板與便條貼</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+        }
+        .board-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 28px;
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
+            width: 1000px;
+            height: 650px;
+            position: relative;
+            overflow: hidden;
+            padding: 2.5rem 2rem 2rem 2.5rem;
+            border: 2.5px solid #ffe066;
+        }
+        .board-title {
+            position: absolute;
+            left: 40px;
+            top: 18px;
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: #f6b93b;
+            letter-spacing: 2px;
+            opacity: 0.92;
+            z-index: 20;
+        }
+        .add-note-btn {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(58, 123, 213, 0.13);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .add-note-btn:hover {
+            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+            transform: scale(1.05);
+        }
+        .note {
+            position: absolute;
+            min-width: 140px;
+            min-height: 90px;
+            background: linear-gradient(135deg, #fffbe7 60%, #ffe066 100%);
+            border: 2px solid #ffe066;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(255, 224, 102, 0.18);
+            padding: 1rem 1.2rem 0.8rem 1.2rem;
+            font-size: 1.15rem;
+            color: #7a5c00;
+            resize: both;
+            overflow: auto;
+            cursor: move;
+            transition: box-shadow 0.2s, border 0.2s;
+        }
+        .note:active {
+            box-shadow: 0 8px 24px rgba(255, 224, 102, 0.28);
+            border: 2.5px solid #f6b93b;
+        }
+        .note textarea {
+            width: 100%;
+            height: 70px;
+            border: none;
+            background: transparent;
+            font-size: 1.15rem;
+            color: #7a5c00;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 7px;
+            right: 10px;
+            background: #ff7675;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(255, 118, 117, 0.13);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .delete-btn:hover {
+            background: #e17055;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="board-container" id="board">
+        <div class="board-title">📝 我的白板</div>
+        <button class="add-note-btn" onclick="addNote()">＋ 新增便條貼</button>
+        <div id="description" style="margin-top:70px; margin-bottom:18px; font-size:1.15rem; color:#a259c6; text-align:center; letter-spacing:1px;">
+            歡迎在這裡留下你的想法或心情。
+            <textarea id="mainText" placeholder="在這裡輸入你的心情或想法..." style="display:block;margin:18px auto 0 auto;width:80%;min-height:60px;max-width:700px;padding:0.8em 1em;border-radius:10px;border:1.5px solid #a6c1ee;font-size:1.1rem;color:#a259c6;resize:vertical;"></textarea>
+        </div>
+    </div>
+    <script>
+        let noteCount = 0;
+        function addNote() {
+            const board = document.getElementById('board');
+            const note = document.createElement('div');
+            note.className = 'note';
+            note.style.left = (60 + noteCount * 30) + 'px';
+            note.style.top = (60 + noteCount * 30) + 'px';
+            note.innerHTML = `
+                <button class="delete-btn" onclick="this.parentElement.remove()">×</button>
+                <textarea placeholder="輸入內容..."></textarea>
+            `;
+            makeDraggable(note);
+            board.appendChild(note);
+            noteCount++;
+        }
+        function makeDraggable(el) {
+            let isDown = false, offsetX, offsetY;
+            el.addEventListener('mousedown', function(e) {
+                if (e.target.tagName === 'TEXTAREA' || e.target.className === 'delete-btn') return;
+                isDown = true;
+                offsetX = e.offsetX;
+                offsetY = e.offsetY;
+                el.style.zIndex = 1000;
+            });
+            document.addEventListener('mousemove', function(e) {
+                if (!isDown) return;
+                const boardRect = document.getElementById('board').getBoundingClientRect();
+                let x = e.clientX - boardRect.left - offsetX;
+                let y = e.clientY - boardRect.top - offsetY;
+                // 邊界限制
+                x = Math.max(0, Math.min(x, boardRect.width - el.offsetWidth));
+                y = Math.max(0, Math.min(y, boardRect.height - el.offsetHeight));
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+            });
+            document.addEventListener('mouseup', function() {
+                isDown = false;
+                el.style.zIndex = '';
+            });
+        }
+
+        // 判斷來源頁面
+        const ref = document.referrer;
+        const isFromMoreToOne = ref.includes('more_to_one.html');
+        const isFromInterface = ref.includes('teacher/interface.html');
+        const isFromTeacherCopy = ref.includes('teacher%20copy/interface.html') || ref.includes('teacher copy/interface.html');
+
+        // 便利貼互動區塊選擇器（假設有id=stickyBoard）
+        const stickyBoard = document.getElementById('stickyBoard');
+        // 便利貼互動相關按鈕（假設有id=addStickyBtn等）
+        const addStickyBtn = document.getElementById('addStickyBtn');
+
+        if (isFromMoreToOne) {
+            // 不再隱藏便利貼互動功能，僅顯示留言輸入區
+            const inputBox = document.createElement('div');
+            inputBox.style = 'margin-top:32px;display:flex;gap:12px;justify-content:center;';
+            inputBox.innerHTML = `
+                <input id="msgInput" type="text" placeholder="在這裡留言..." style="flex:1;padding:0.7em 1em;border-radius:8px;border:1px solid #a6c1ee;font-size:1.1rem;max-width:340px;">
+                <button id="msgSend" style="padding:0.7em 1.5em;border-radius:8px;border:none;background:linear-gradient(120deg,#a8edea,#fed6e3);color:#a259c6;font-weight:700;font-size:1.1rem;cursor:pointer;">送出</button>
+            `;
+            document.body.appendChild(inputBox);
+            document.getElementById('msgSend').onclick = function() {
+                const val = document.getElementById('msgInput').value.trim();
+                if(val) {
+                    alert('留言已送出：'+val);
+                    document.getElementById('msgInput').value = '';
+                }
+            };
+        } else if (isFromInterface) {
+            // 僅允許便利貼互動，隱藏留言輸入區
+            // 預設顯示便利貼功能，不需額外處理
+        } else {
+            // 其他來源，兩者都顯示
+            if (stickyBoard) stickyBoard.style.display = '';
+            if (addStickyBtn) addStickyBtn.style.display = '';
+        }
+
+        // 判斷是否從 teacher copy/interface.html 進入
+        if (isFromTeacherCopy) {
+            // 讓留言欄 textarea 變成唯讀
+            const mainText = document.getElementById('mainText');
+            if (mainText) {
+                mainText.readOnly = true;
+                mainText.style.background = '#eee';
+                mainText.style.cursor = 'not-allowed';
+                mainText.style.color = '#aaa';
+            }
+        }
+
+        // --- 留言同步區域 ---
+        // 取得留言欄 textarea
+        const mainText = document.getElementById('mainText');
+        // 儲存留言到 localStorage 並同步顯示
+        function syncMainText(val) {
+            localStorage.setItem('mainText_global', val);
+            if (mainText) mainText.value = val;
+        }
+        // 初始化：載入最新留言
+        if (mainText) {
+            const saved = localStorage.getItem('mainText_global') || '';
+            mainText.value = saved;
+        }
+        // 只有非唯讀狀態才可編輯與同步
+        if (mainText && !mainText.readOnly) {
+            mainText.addEventListener('input', function() {
+                syncMainText(this.value);
+            });
+        }
+        // 定時自動同步（跨分頁/視窗）
+        setInterval(() => {
+            const latest = localStorage.getItem('mainText_global') || '';
+            if (mainText && mainText.value !== latest && !mainText.readOnly) {
+                mainText.value = latest;
+            }
+        }, 2000);
+        // --- 留言同步區域結束 ---
+    </script>
+</body>
+</html>

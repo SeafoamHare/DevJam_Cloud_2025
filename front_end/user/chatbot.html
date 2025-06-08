@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 測試頁面</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+        }
+        .ws-box {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            width: 400px;
+            text-align: center;
+        }
+        .ws-box h2 {
+            color: #a259c6;
+            margin-bottom: 1.5rem;
+        }
+        .ws-log {
+            background: #f3f3f3;
+            border-radius: 8px;
+            padding: 1rem;
+            height: 120px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            text-align: left;
+        }
+        .ws-box input[type="text"] {
+            width: 70%;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d9e6;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .ws-box button {
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(90deg, #a259c6 0%, #fbc2eb 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+        .ws-box button:hover {
+            background: linear-gradient(90deg, #fbc2eb 0%, #a259c6 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="ws-box">
+        <h2>WebSocket 測試</h2>
+        <div class="ws-log" id="wsLog"></div>
+        <input type="text" id="wsTo" placeholder="收件人 user id..." style="width:30%;margin-bottom:0.5rem;">
+        <input type="text" id="wsInput" placeholder="輸入訊息...">
+        <button onclick="sendMessage()">送出</button>
+    </div>
+    <script>
+        // 請將 ws://localhost:8000 替換為您的 WebSocket 伺服器位址
+        //const ws = new WebSocket("ws://localhost:8000/ws/${localStorage.getItem('username')}");
+        console.log(`WebSocket 連線到 ws://localhost:8000/ws/${localStorage.getItem('username')}`);
+        const ws = new WebSocket(`ws://localhost:8000/ws/${localStorage.getItem('username')}`);
+        const wsLog = document.getElementById('wsLog');
+        ws.onopen = function() {
+            wsLog.innerHTML += '已連線到 WebSocket 伺服器<br>';
+        };
+        ws.onmessage = function(event) {
+            wsLog.innerHTML += '收到訊息：' + event.data + '<br>';
+            wsLog.scrollTop = wsLog.scrollHeight;
+        };
+        ws.onclose = function() {
+            wsLog.innerHTML += 'WebSocket 連線已關閉<br>';
+        };
+        ws.onerror = function() {
+            wsLog.innerHTML += 'WebSocket 發生錯誤<br>';
+        };
+        function sendMessage() {
+            const msg = document.getElementById('wsInput').value;
+            const username = localStorage.getItem('username') || '';
+            console.log(`發送者: ${username}`);
+            // 這裡假設有一個輸入框讓使用者輸入對方的 user id
+            let to = document.getElementById('wsTo') ? document.getElementById('wsTo').value : '';
+            
+            if (msg && ws.readyState === 1) {
+                const payload = JSON.stringify({ from_id: "3", to_id: "1", content: msg ,action: "chat"});
+                ws.send(payload);
+                wsLog.innerHTML += `送出訊息給 <b>${to}</b>：${msg}<br>`;
+                wsLog.scrollTop = wsLog.scrollHeight;
+                document.getElementById('wsInput').value = '';
+            }
+        }
+    </script>
+</body>
+</html>

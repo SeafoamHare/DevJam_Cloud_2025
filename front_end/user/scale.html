@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情緒/家庭暴力受傷量表</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .scale-form {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(162, 89, 198, 0.13);
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            max-width: 420px;
+            width: 100%;
+        }
+        h2 {
+            color: #a259c6;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .question {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            font-size: 1.1rem;
+            color: #3a3a3a;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #a6c1ee;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 12px;
+            color: #a259c6;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 1.2rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(120deg, #fed6e3 0%, #a8edea 100%);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <form class="scale-form" id="scaleForm">
+        <h2>情緒/家庭暴力受傷量表</h2>
+        <div class="question">
+            <label for="q1">1. 你最近是否常常感到情緒低落或無助？</label>
+            <select id="q1" name="q1" required>
+                <option value="">請選擇分數</option>
+                <option value="1">1（完全沒有）</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5（非常嚴重）</option>
+            </select>
+        </div>
+        <div class="question">
+            <label for="q2">2. 你是否曾因家庭或親密關係而感到受傷或害怕？</label>
+            <select id="q2" name="q2" required>
+                <option value="">請選擇分數</option>
+                <option value="1">1（完全沒有）</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5（非常嚴重）</option>
+            </select>
+        </div>
+        <div class="question">
+            <label for="q3">3. 你是否覺得自己很難信任他人或表達情感？</label>
+            <select id="q3" name="q3" required>
+                <option value="">請選擇分數</option>
+                <option value="1">1（完全沒有）</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5（非常嚴重）</option>
+            </select>
+        </div>
+        <div class="question">
+            <label for="q4">4. 你是否經常因過去的經歷而感到焦慮或害怕？</label>
+            <select id="q4" name="q4" required>
+                <option value="">請選擇分數</option>
+                <option value="1">1（完全沒有）</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5（非常嚴重）</option>
+            </select>
+        </div>
+        <div class="question">
+            <label for="q5">5. 你是否覺得自己需要幫助卻不知如何尋求？</label>
+            <select id="q5" name="q5" required>
+                <option value="">請選擇分數</option>
+                <option value="1">1（完全沒有）</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5（非常嚴重）</option>
+            </select>
+        </div>
+        <button type="submit" class="submit-btn">送出</button>
+    </form>
+    <script>
+    let totalScore = 0;
+    document.getElementById('scaleForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        totalScore = 0;
+        for(let i=1;i<=5;i++){
+            totalScore += parseInt(document.getElementById('q'+i).value, 10);
+        }
+        // 分數已存於 totalScore 變數，不顯示於畫面
+        // 若要跳轉頁面可加上：
+        location.href = 'recommend.html';
+    });
+    </script>
+</body>
+</html>
